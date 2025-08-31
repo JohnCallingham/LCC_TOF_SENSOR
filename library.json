@@ -1,0 +1,8 @@
+{
+  "name": "LCC_TOF_SENSOR",
+  "version": "0.0.0+20250831162553",
+  "dependencies":
+    {
+      "LCC_NODE_COMPONENT_BASE": "https://github.com/JohnCallingham/LCC_NODE_COMPONENT_BASE.git"
+    }
+}
