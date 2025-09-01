@@ -56,6 +56,8 @@ class ToFThreshold {
  */
 class ToFSensor : public LCC_Node_Component_Base {
   public:
+    ToFSensor(uint8_t multiplexorPort) { this->multiplexorPort = multiplexorPort; }
+
     void addThreshold(uint16_t valueNear, uint16_t valueFar, uint16_t eventIndexNear, uint16_t eventIndexFar) {
       thresholds.push_back(ToFThreshold(valueNear, valueFar, eventIndexNear, eventIndexFar));
     }
@@ -82,19 +84,27 @@ class ToFSensor : public LCC_Node_Component_Base {
     void sendEventsForCurrentState() override;
 
     /**
+     * Called regularly to read the range from this sensor.
+     * Returns the range or -1 if there is an error.
+     */
+    int read();
+
+    /**
      * Called when a range has been received from the sensor.
      * Checks all thresholds for this sensor to see if one has been passed.
      * Sends the appropriate event if required.
      */
     void check(uint8_t range);
 
+    void print();
 
   private:
     std::vector<ToFThreshold> thresholds; // Stores all thresholds for this ToF sensor.
 
-
-
-
+    /**
+     * The port number on the I2C multiplexor for this ToF sensor.
+     */
+    uint8_t multiplexorPort;
 };
 
 #endif

@@ -47,3 +47,10 @@ void ToFSensor::check(uint8_t range) {
     }
   }
 }
+
+void ToFSensor::print() {
+  for (auto & threshold : thresholds) {
+    Serial.printf("\nvalueNear=%d, valueFar=%d, eventIndexNear=%d, eventIndexFar=%d",
+      threshold.valueNear, threshold.valueFar, threshold.eventIndexNear, threshold.eventIndexFar);
+  }
+}
