@@ -44,6 +44,7 @@ void ToFSensor::initialise(bool muxConnected) {
 
   if (noDevices) {
     Serial.printf("\n%6ld No I2C devices on mux port %d", millis(), this->multiplexorPort);
+    return;
   }
 
   // Based on which addresses have been found, initialise the appropriate device.
