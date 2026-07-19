@@ -4,6 +4,11 @@
 #include <Arduino.h>
 #include <vector>
 #include "LCC_Node_Component_Base.h"
+#include <Wire.h>
+#include "Adafruit_VL6180X.h"
+// #include "Adafruit_VL53L0X.h"
+
+#define MULTIPLEXER_I2C_ADDRESS 0x70
 
 /**
  * Class ToFThreshold represents one threshold for a ToFSensor.
@@ -14,7 +19,8 @@ class ToFThreshold {
      * A constructor which allows near and far values to be set directly.
      * valueNear and valueFar are in mm.
      */
-    ToFThreshold(uint16_t valueNear, uint16_t valueFar, uint16_t eventIndexNear, uint16_t eventIndexFar) {
+    ToFThreshold(uint8_t thresholdNumber, uint16_t valueNear, uint16_t valueFar, uint16_t eventIndexNear, uint16_t eventIndexFar) {
+      this->thresholdNumber = thresholdNumber;
       setValues(valueNear, valueFar);
       setEventIndexes(eventIndexNear, eventIndexFar);
       this->currentState = State::Unknown;
@@ -24,7 +30,9 @@ class ToFThreshold {
      * Alternative constructor using a single value and a hysteris value.
      * value and hysterisis are in mm.
      */
-    ToFThreshold(uint16_t value, uint8_t hysterisis, uint16_t eventIndexNear, uint16_t eventIndexFar) {
+    ToFThreshold(uint8_t thresholdNumber, uint16_t value, uint8_t hysterisis, uint16_t eventIndexNear, uint16_t eventIndexFar) {
+      this->thresholdNumber = thresholdNumber;
+
       int valueNear = value - (hysterisis/2);
       int valueFar = value + (hysterisis/2);
 
@@ -36,8 +44,12 @@ class ToFThreshold {
       this->currentState = State::Unknown;
     }
 
+    const char* printCurrentState();
+
     enum State { Unknown, Near, Far };
     State currentState;
+
+    uint8_t thresholdNumber;
 
     uint16_t eventIndexNear;
     uint16_t eventIndexFar;
@@ -56,15 +68,23 @@ class ToFThreshold {
  */
 class ToFSensor : public LCC_Node_Component_Base {
   public:
-    ToFSensor(uint8_t multiplexorPort) { this->multiplexorPort = multiplexorPort; }
+    ToFSensor(uint8_t sensorNumber, uint8_t multiplexorPort) { this->sensorNumber = sensorNumber; this->multiplexorPort = multiplexorPort; }
 
-    void addThreshold(uint16_t valueNear, uint16_t valueFar, uint16_t eventIndexNear, uint16_t eventIndexFar) {
-      thresholds.push_back(ToFThreshold(valueNear, valueFar, eventIndexNear, eventIndexFar));
+    void addThreshold(uint8_t thresholdNumber, uint16_t valueNear, uint16_t valueFar, uint16_t eventIndexNear, uint16_t eventIndexFar) {
+      thresholds.push_back(ToFThreshold(thresholdNumber, valueNear, valueFar, eventIndexNear, eventIndexFar));
     }
 
-    void addThreshold(uint16_t value, uint8_t hysterisis, uint16_t eventIndexNear, uint16_t eventIndexFar) {
-      thresholds.push_back(ToFThreshold(value, hysterisis, eventIndexNear, eventIndexFar));
+    void addThreshold(uint8_t thresholdNumber, uint16_t value, uint8_t hysterisis, uint16_t eventIndexNear, uint16_t eventIndexFar) {
+      thresholds.push_back(ToFThreshold(thresholdNumber, value, hysterisis, eventIndexNear, eventIndexFar));
     }
+
+    void initialise(bool muxConnected);
+
+    /**
+     * Updates the specified threshold's value and hysterisis properties.
+     * These will be called when the user has modified the configuration values.
+     */
+    void updateValueAndHysterisis(uint8_t thresholdNumber, uint8_t value, uint8_t hysterisis);
 
     /**
      * Returns true if index matches one of this object's events, else false.
@@ -84,17 +104,24 @@ class ToFSensor : public LCC_Node_Component_Base {
     void sendEventsForCurrentState() override;
 
     /**
-     * Called regularly to read the range from this sensor.
-     * Returns the range or -1 if there is an error.
+     * Called repeatedly from the main program loop.
+     * Tests all thresholds to see if a change has occurred.
+     * Sends any required events.
      */
-    int read();
+    void loop();
 
-    /**
-     * Called when a range has been received from the sensor.
-     * Checks all thresholds for this sensor to see if one has been passed.
-     * Sends the appropriate event if required.
-     */
-    void check(uint8_t range);
+    // /**
+    //  * Called regularly to read the range from this sensor.
+    //  * Returns the range or -1 if there is an error.
+    //  */
+    // int read();
+
+    // /**
+    //  * Called when a range has been received from the sensor.
+    //  * Checks all thresholds for this sensor to see if one has been passed.
+    //  * Sends the appropriate event if required.
+    //  */
+    // void check(uint8_t range);
 
     void print();
 
@@ -102,9 +129,20 @@ class ToFSensor : public LCC_Node_Component_Base {
     std::vector<ToFThreshold> thresholds; // Stores all thresholds for this ToF sensor.
 
     /**
+     * The number of this ToF sensor (0 to NUM_SENSOR - 1).
+     */
+    uint8_t sensorNumber;
+
+    /**
      * The port number on the I2C multiplexor for this ToF sensor.
      */
     uint8_t multiplexorPort;
+
+    /**
+     * The driver object for this ToF sensor.
+     */
+    Adafruit_VL6180X vl;
+    // Adafruit_VL53L0X vl;
 };
 
 #endif

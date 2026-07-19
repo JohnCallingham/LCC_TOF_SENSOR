@@ -3,6 +3,8 @@
   "version": "0.0.0+20250831162553",
   "dependencies":
     {
-      "LCC_NODE_COMPONENT_BASE": "https://github.com/JohnCallingham/LCC_NODE_COMPONENT_BASE.git"
+      "LCC_NODE_COMPONENT_BASE": "https://github.com/JohnCallingham/LCC_NODE_COMPONENT_BASE.git",
+      "Adafruit_VL53L0X": "https://github.com/adafruit/Adafruit_VL53L0X.git",
+      "Adafruit_VL6180X": "https://github.com/adafruit/Adafruit_VL6180X.git"
     }
 }
