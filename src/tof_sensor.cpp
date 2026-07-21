@@ -20,8 +20,8 @@ void ToFSensor::initialise(bool muxConnected) {
     return;
   }
 
-  vl = Adafruit_VL6180X();
-  // vl = Adafruit_VL53L0X();
+  // vl6 = Adafruit_VL6180X();
+  // vl5 = Adafruit_VL53L0X();
 
   // Switch the mux to this port.
   Wire.beginTransmission(MULTIPLEXER_I2C_ADDRESS);
@@ -47,16 +47,15 @@ void ToFSensor::initialise(bool muxConnected) {
     return;
   }
 
-  // Based on which addresses have been found, initialise the appropriate device.
-  // VL53L0X is 0x29
-  // The VL6180X has a default I2C address of 0x29!
-  
   // Check for a sensor on this port.
-  if (! vl.begin()) {
+  Serial.printf("\n%6ld Calling vl5.begin() on mux port %d", millis(), this->multiplexorPort);
+  if (! vl5->begin()) {
     // There is no sensor on this port.
     Serial.printf("\n%6ld No sensor on multiplexor port %d", millis(), this->multiplexorPort);
+    sensorConnected = false;
   } else {
     Serial.printf("\n%6ld Sensor on multiplexor port %d", millis(), this->multiplexorPort);
+    sensorConnected = true;
   }
 }
 
@@ -128,7 +127,31 @@ void ToFSensor::sendEventsForCurrentState() {
 
 void ToFSensor::loop() {
 
+  if (sensorConnected) {
 
+    read();
+
+    delay(100);
+
+  }
+
+}
+
+int ToFSensor::read() {
+
+  VL53L0X_RangingMeasurementData_t measure;
+    
+  Serial.printf("\nReading a measurement... ");
+
+  vl5->rangingTest(&measure, false); // pass in 'true' to get debug data printout!
+
+  if (measure.RangeStatus != 4) {  // phase failures have incorrect data
+    Serial.printf("\nDistance (mm): %d", measure.RangeMilliMeter);
+  } else {
+    Serial.printf("\n out of range ");
+  }
+
+  return measure.RangeMilliMeter;
 
 }
 

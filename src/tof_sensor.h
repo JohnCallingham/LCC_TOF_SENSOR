@@ -6,7 +6,7 @@
 #include "LCC_Node_Component_Base.h"
 #include <Wire.h>
 #include "Adafruit_VL6180X.h"
-// #include "Adafruit_VL53L0X.h"
+#include "Adafruit_VL53L0X.h"
 
 #define MULTIPLEXER_I2C_ADDRESS 0x70
 
@@ -68,7 +68,11 @@ class ToFThreshold {
  */
 class ToFSensor : public LCC_Node_Component_Base {
   public:
-    ToFSensor(uint8_t sensorNumber, uint8_t multiplexorPort) { this->sensorNumber = sensorNumber; this->multiplexorPort = multiplexorPort; }
+    ToFSensor(uint8_t sensorNumber, uint8_t multiplexorPort, Adafruit_VL53L0X* vl){ 
+      this->sensorNumber = sensorNumber;
+      this->multiplexorPort = multiplexorPort;
+      this->vl5 = vl;
+    }
 
     void addThreshold(uint8_t thresholdNumber, uint16_t valueNear, uint16_t valueFar, uint16_t eventIndexNear, uint16_t eventIndexFar) {
       thresholds.push_back(ToFThreshold(thresholdNumber, valueNear, valueFar, eventIndexNear, eventIndexFar));
@@ -111,12 +115,6 @@ class ToFSensor : public LCC_Node_Component_Base {
     void loop();
 
     // /**
-    //  * Called regularly to read the range from this sensor.
-    //  * Returns the range or -1 if there is an error.
-    //  */
-    // int read();
-
-    // /**
     //  * Called when a range has been received from the sensor.
     //  * Checks all thresholds for this sensor to see if one has been passed.
     //  * Sends the appropriate event if required.
@@ -126,12 +124,18 @@ class ToFSensor : public LCC_Node_Component_Base {
     void print();
 
   private:
+    /**
+     * Called regularly to read the range from this sensor.
+     * Returns the range or -1 if there is an error.
+     */
+    int read();
+
     std::vector<ToFThreshold> thresholds; // Stores all thresholds for this ToF sensor.
 
     /**
      * The number of this ToF sensor (0 to NUM_SENSOR - 1).
      */
-    uint8_t sensorNumber;
+    uint8_t sensorNumber; // needed ?? can use mux port instaed???
 
     /**
      * The port number on the I2C multiplexor for this ToF sensor.
@@ -141,8 +145,14 @@ class ToFSensor : public LCC_Node_Component_Base {
     /**
      * The driver object for this ToF sensor.
      */
-    Adafruit_VL6180X vl;
-    // Adafruit_VL53L0X vl;
+    Adafruit_VL6180X vl6;
+    Adafruit_VL53L0X* vl5;
+
+    /**
+     * Is there a sensor connected to thsi mux port?
+     * 
+     */
+    bool sensorConnected = false;
 };
 
 #endif
