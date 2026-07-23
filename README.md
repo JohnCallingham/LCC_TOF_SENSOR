@@ -10,8 +10,9 @@ This component has the following dependencies;-
 - Adafruit_VL6180X: https://github.com/adafruit/Adafruit_VL6180X.git
 
 The following software components are dependencies of one or more of the above components;-
-
-
+- Adafruit BusIO: https://github.com/adafruit/Adafruit_BusIO
+- Adafruit GFX Library: https://github.com/adafruit/Adafruit-GFX-Library
+- Adafruit SSD1306: https://github.com/adafruit/Adafruit_SSD1306
 
 
 
