@@ -9,6 +9,7 @@
 #include "Adafruit_VL6180X.h"
 
 #define MULTIPLEXER_I2C_ADDRESS 0x70
+#define READ_SENSOR_DELAY_mS 50
 
 /**
  * Class ToFSensor represents one Tof sensor, which will have one or more thresholds.
@@ -16,7 +17,6 @@
 class ToFSensor : public LCC_Node_Component_Base {
   public:
     ToFSensor(uint8_t multiplexorPort, Adafruit_VL6180X *vl){ 
-      // this->sensorNumber = sensorNumber;
       this->multiplexorPort = multiplexorPort;
       this->vl6 = vl;
     }
@@ -61,6 +61,13 @@ class ToFSensor : public LCC_Node_Component_Base {
      */
     void loop();
 
+  private:
+    /**
+     * Called regularly to read the range from this sensor.
+     * Returns the range or 255 if there is an error.
+     */
+    int read();
+
     /**
      * Called when a range has been received from the sensor.
      * Checks all thresholds for this sensor to see if one has been passed.
@@ -70,19 +77,7 @@ class ToFSensor : public LCC_Node_Component_Base {
 
     void print();
 
-  private:
-    /**
-     * Called regularly to read the range from this sensor.
-     * Returns the range or -1 if there is an error.
-     */
-    int read();
-
     std::vector<ToFThreshold> thresholds; // Stores all thresholds for this ToF sensor.
-
-    /**
-     * The number of this ToF sensor (0 to NUM_SENSOR - 1).
-     */
-    // uint8_t sensorNumber; // needed ?? can use mux port instaed???
 
     /**
      * The port number on the I2C multiplexor for this ToF sensor.
@@ -93,13 +88,17 @@ class ToFSensor : public LCC_Node_Component_Base {
      * The driver object for this ToF sensor.
      */
     Adafruit_VL6180X *vl6;
-    // Adafruit_VL53L0X *vl5;
 
     /**
      * Is there a sensor connected to thsi mux port?
-     * 
      */
     bool sensorConnected = false;
+
+    /**
+     * nextRead is the value of millis() when the sensor will be read next.
+     * Allows the LCC processing to run regularly and reading the sensor to not occur every time loop() is called.
+     */
+    unsigned long nextRead = 0;
 };
 
 #endif

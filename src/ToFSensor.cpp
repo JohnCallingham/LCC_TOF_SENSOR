@@ -15,6 +15,7 @@ void ToFSensor::initialise(bool muxConnected) {
   int retVal;
   bool noDevices = true;
 
+  // Find I2C devices on this port.
   for (int i2cAddress = 0x01; i2cAddress < 0x7F; i2cAddress++) {
     if (i2cAddress == 0x70) continue; // Ignore the multiplexor port address.
     Wire.beginTransmission(i2cAddress);
@@ -32,7 +33,6 @@ void ToFSensor::initialise(bool muxConnected) {
   }
 
   // Check for a sensor on this port.
-  // Serial.printf("\n%6ld Calling vl6.begin() on mux port %d", millis(), this->multiplexorPort);
   if (! vl6->begin()) {
     // There is no sensor on this port.
     Serial.printf("\n%6ld No sensor on multiplexor port %d", millis(), this->multiplexorPort);
@@ -89,10 +89,6 @@ bool ToFSensor::eventIndexMatchesCurrentState(uint16_t index) {
 }
 
 void ToFSensor::sendEventsForCurrentState() {
-  // Serial.printf("\n%6ld In sendEventsForCurrentState(). Sensor: %d", millis(), this->sensorNumber);
-
-  // this->print();
-
   for (auto & threshold : thresholds) {
     if (threshold.currentState == ToFThreshold::State::Near) {
       if (sendEvent) sendEvent(threshold.eventIndexNear);
@@ -104,7 +100,6 @@ void ToFSensor::sendEventsForCurrentState() {
 }
 
 void ToFSensor::check(int range) {
-  // Serial.printf("\n%6ld In check() for mux=%d, range=%d", millis(), this->multiplexorPort, range);
   for (auto & threshold : thresholds) {
     switch (threshold.currentState) {
       case ToFThreshold::State::Far:
@@ -131,8 +126,14 @@ void ToFSensor::check(int range) {
 
 void ToFSensor::loop() {
   // Need to cause a non blocking delay here to allow the LCC code to run smoothly.
-  // Only read the sensor every 50 mS.
+  // Only read the sensor every READ_SENSOR_DELAY_mS.
+  if (millis() < nextRead) {
+    // Not ready to read yet.
+    return;
+  }
 
+  // Schedule the next read for READ_SENSOR_DELAY_mS in the future.
+  nextRead = millis() + READ_SENSOR_DELAY_mS;
 
   if (this->sensorConnected) {
     // Switch the mux to this port.
@@ -143,8 +144,6 @@ void ToFSensor::loop() {
     // Get the current range and check if any threshold events need to be sent.
     int range = this->read();
     this->check(range);
-
-    // delay(50);
   }
 }
 
