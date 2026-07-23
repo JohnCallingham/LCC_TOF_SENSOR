@@ -1,5 +1,5 @@
 # LCC_TOF_SENSOR
-This component is part of a suite of components which can be used as part of a program which implements an OpenLCB/LCC node. It has been developed using PlatformIO and has been tested on an Arduino Nano ESP32.
+This component is part of a suite of components which can be used as part of a program which implements an OpenLCB/LCC node. It has been developed using PlatformIO and has been tested on an Arduino Nano ESP32. The program which includes this component will drive an I2C multiplexor and the multiplexor's output ports will be connected to one or more VL6180X ToF sensors.
 
 This component implements two classes;-
 - ```ToFSensor```. This class represents a sensor which can be connected to one of the I2C multiplexor ports.
