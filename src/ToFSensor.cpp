@@ -1,17 +1,4 @@
-#include "tof_sensor.h"
-
-const char* ToFThreshold::printCurrentState() {
-  switch (this->currentState) {
-    case ToFThreshold::State::Unknown:
-      return "Unknown";
-    case ToFThreshold::State::Near:
-      return "Near";
-    case ToFThreshold::State::Far:
-      return "Far";
-  }
-
-  return ""; // To keep the compiler happy!!
-}
+#include "ToFSensor.h"
 
 void ToFSensor::initialise(bool muxConnected) {
 
@@ -19,9 +6,6 @@ void ToFSensor::initialise(bool muxConnected) {
     // No multiplexor connected, so nothing to do!
     return;
   }
-
-  // vl6 = Adafruit_VL6180X();
-  // vl5 = Adafruit_VL53L0X();
 
   // Switch the mux to this port.
   Wire.beginTransmission(MULTIPLEXER_I2C_ADDRESS);
@@ -48,14 +32,22 @@ void ToFSensor::initialise(bool muxConnected) {
   }
 
   // Check for a sensor on this port.
-  Serial.printf("\n%6ld Calling vl5.begin() on mux port %d", millis(), this->multiplexorPort);
-  if (! vl5->begin()) {
+  // Serial.printf("\n%6ld Calling vl6.begin() on mux port %d", millis(), this->multiplexorPort);
+  if (! vl6->begin()) {
     // There is no sensor on this port.
     Serial.printf("\n%6ld No sensor on multiplexor port %d", millis(), this->multiplexorPort);
     sensorConnected = false;
   } else {
     Serial.printf("\n%6ld Sensor on multiplexor port %d", millis(), this->multiplexorPort);
     sensorConnected = true;
+
+    // Set the initial state for all thresholds for this sensor.
+    int range = this->read();
+    Serial.printf("\n%6ld initialising threshold states, range=%d", millis(), range);
+    for (auto & threshold : thresholds) {
+      Serial.printf("\n%6ld threshold number=%d, state=%s", millis(), threshold.thresholdNumber, threshold.printCurrentState());
+      threshold.setInitialState(range);
+    }
   }
 }
 
@@ -111,48 +103,60 @@ void ToFSensor::sendEventsForCurrentState() {
   }
 }
 
-// void ToFSensor::check(uint8_t range) {
-//   for (auto & threshold : thresholds) {
-//     if (threshold.currentState == ToFThreshold::State::Far) {
-//       if (range < threshold.valueNear) {
-//         if (sendEvent) sendEvent(threshold.eventIndexNear);
-//       }
-//     } else if (threshold.currentState == ToFThreshold::State::Near) {
-//       if (range > threshold.valueFar) {
-//         if (sendEvent) sendEvent(threshold.eventIndexFar);
-//       }
-//     }
-//   }
-// }
+void ToFSensor::check(int range) {
+  // Serial.printf("\n%6ld In check() for mux=%d, range=%d", millis(), this->multiplexorPort, range);
+  for (auto & threshold : thresholds) {
+    switch (threshold.currentState) {
+      case ToFThreshold::State::Far:
+        // Has the range moved to less than the near value?
+        if (range < threshold.valueNear) {
+          threshold.currentState = ToFThreshold::State::Near;
+          Serial.printf("\n%6ld Sending event near for threshold %d on mux port %d", millis(), threshold.thresholdNumber, this->multiplexorPort);
+          if (sendEvent) sendEvent(threshold.eventIndexNear);
+        }
+        break;
+      case ToFThreshold::State::Near:
+        // Has the range moved to more than the far value?
+        if (range > threshold.valueFar) {
+          threshold.currentState = ToFThreshold::State::Far;
+          Serial.printf("\n%6ld Sending event far for threshold %d on mux port %d", millis(), threshold.thresholdNumber, this->multiplexorPort);
+          if (sendEvent) sendEvent(threshold.eventIndexFar);
+        }
+        break;
+      case ToFThreshold::State::Unknown:
+        break;
+    }
+  }
+}
 
 void ToFSensor::loop() {
+  // Need to cause a non blocking delay here to allow the LCC code to run smoothly.
+  // Only read the sensor every 50 mS.
 
-  if (sensorConnected) {
 
-    read();
+  if (this->sensorConnected) {
+    // Switch the mux to this port.
+    Wire.beginTransmission(MULTIPLEXER_I2C_ADDRESS);
+    Wire.write(1 << this->multiplexorPort);
+    Wire.endTransmission();
 
-    delay(100);
+    // Get the current range and check if any threshold events need to be sent.
+    int range = this->read();
+    this->check(range);
 
+    // delay(50);
   }
-
 }
 
 int ToFSensor::read() {
+  uint8_t range = vl6->readRange();
+  uint8_t status = vl6->readRangeStatus();
 
-  VL53L0X_RangingMeasurementData_t measure;
-    
-  Serial.printf("\nReading a measurement... ");
-
-  vl5->rangingTest(&measure, false); // pass in 'true' to get debug data printout!
-
-  if (measure.RangeStatus != 4) {  // phase failures have incorrect data
-    Serial.printf("\nDistance (mm): %d", measure.RangeMilliMeter);
+  if (status == VL6180X_ERROR_NONE) {
+    return range;
   } else {
-    Serial.printf("\n out of range ");
+    return 255;
   }
-
-  return measure.RangeMilliMeter;
-
 }
 
 void ToFSensor::print() {
