@@ -13,8 +13,6 @@ class ToFSensorVL53L0X : public ToFSensorBase {
 
     void initialise(bool muxConnected) final;
 
-
-
   private:
     /**
      * Called regularly to read the range from this sensor.
@@ -27,11 +25,6 @@ class ToFSensorVL53L0X : public ToFSensorBase {
      */
     Adafruit_VL53L0X *vl;
 
-    // VL53L0X_RangingMeasurementData_t measure;
-
-
-
-    
-};
+  };
 
 #endif

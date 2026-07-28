@@ -58,7 +58,7 @@ class ToFSensorBase : public LCC_Node_Component_Base {
     void setInitialState();
 
 
-  /**
+    /**
      * The port number on the I2C multiplexor for this ToF sensor.
      */
     uint8_t multiplexorPort;
@@ -69,8 +69,6 @@ class ToFSensorBase : public LCC_Node_Component_Base {
     bool sensorConnected = false;
 
     std::vector<ToFThreshold> thresholds; // Stores all thresholds for this ToF sensor.
-
-
 
   private:
     /**
@@ -85,8 +83,6 @@ class ToFSensorBase : public LCC_Node_Component_Base {
      * Allows the LCC processing to run regularly and reading the sensor to not occur every time loop() is called.
      */
     unsigned long nextRead = 0;
-
-
 };
 
 #endif
