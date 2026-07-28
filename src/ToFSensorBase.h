@@ -20,6 +20,12 @@ class ToFSensorBase : public LCC_Node_Component_Base {
       thresholds.push_back(ToFThreshold(thresholdNumber, value, hysterisis, eventIndexNear, eventIndexFar));
     }
 
+    /**
+     * Checks for an I2C device on this mux port.
+     * Returns true if an I2C device is found on this mux port, else false;
+     */
+    int initialiseI2C();
+
     // Must be defined in derived classes.
     virtual void initialise(bool muxConnected) = 0;
     virtual int read() = 0;
@@ -49,7 +55,10 @@ class ToFSensorBase : public LCC_Node_Component_Base {
     void loop();
 
   protected:
-    /**
+    void setInitialState();
+
+
+  /**
      * The port number on the I2C multiplexor for this ToF sensor.
      */
     uint8_t multiplexorPort;

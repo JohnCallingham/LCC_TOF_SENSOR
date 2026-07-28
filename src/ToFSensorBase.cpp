@@ -95,3 +95,42 @@ void ToFSensorBase::check(int range) {
     }
   }
 }
+
+int ToFSensorBase::initialiseI2C() {
+  // Switch the mux to this port.
+  Wire.beginTransmission(MULTIPLEXER_I2C_ADDRESS);
+  Wire.write(1 << this->multiplexorPort);
+  Wire.endTransmission();
+
+  int retVal;
+  bool noDevices = true;
+
+  // Find I2C devices on this port.
+  for (int i2cAddress = 0x01; i2cAddress < 0x7F; i2cAddress++) {
+    if (i2cAddress == 0x70) continue; // Ignore the multiplexor port address.
+    Wire.beginTransmission(i2cAddress);
+    retVal = Wire.endTransmission();
+
+    if (retVal == 0) {
+      Serial.printf("\n%6ld Found device at I2C address 0x%02X on mux port %d", millis(), i2cAddress, this->multiplexorPort);
+      noDevices = false;
+    }
+  }
+
+  if (noDevices) {
+    Serial.printf("\n%6ld No I2C devices on mux port %d", millis(), this->multiplexorPort);
+    return false;
+  }
+
+  return true;
+}
+
+void ToFSensorBase::setInitialState() {
+  // Set the initial state for all thresholds for this sensor.
+  int range = this->read();
+  Serial.printf("\n%6ld initialising threshold states, range=%d", millis(), range);
+  for (auto & threshold : thresholds) {
+    Serial.printf("\n%6ld threshold number=%d, state=%s", millis(), threshold.thresholdNumber, threshold.printCurrentState());
+    threshold.setInitialState(range);
+  }
+}

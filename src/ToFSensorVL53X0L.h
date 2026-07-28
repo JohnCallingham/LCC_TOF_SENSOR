@@ -27,7 +27,7 @@ class ToFSensorVL53L0X : public ToFSensorBase {
      */
     Adafruit_VL53L0X *vl;
 
-
+    // VL53L0X_RangingMeasurementData_t measure;
 
 
 
