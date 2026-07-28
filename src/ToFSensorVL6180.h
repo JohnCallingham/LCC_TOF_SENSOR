@@ -13,8 +13,6 @@ class ToFSensorVL6180 : public ToFSensorBase {
 
     void initialise(bool muxConnected) final;
 
-
-
   private:
     /**
      * Called regularly to read the range from this sensor.
@@ -26,9 +24,6 @@ class ToFSensorVL6180 : public ToFSensorBase {
      * The driver object for this ToF sensor.
      */
     Adafruit_VL6180X *vl;
-
-
-
 
 };
 

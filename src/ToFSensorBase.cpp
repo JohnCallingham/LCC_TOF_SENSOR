@@ -66,7 +66,7 @@ void ToFSensorBase::loop() {
     Wire.endTransmission();
 
     // Get the current range and check if any threshold events need to be sent.
-    int range = this->read();
+    int range = this->read(); // Calls read() in the class for the appropriate sensor.
     this->check(range);
   }
 }

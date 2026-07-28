@@ -22,4 +22,24 @@ The PlatformIO Library Dependency Finder handles downloading all dependencies.
 
 The following functionality is implemented for each ToF sensor;-
 
+## Class hierarchy
+
+```Mermaid
+classDiagram
+    class LCC_Component_Base {
+
+    }
+    class ToFSensorBase {
+
+    }
+    class ToFSensorVL6180 {
+
+    }
+    class ToFSensorVL53L0X {
+
+    }
+    LCC_Component_Base <|-- ToFSensorBase
+    ToFSensorBase <|-- ToFSensorVL6180
+    ToFSensorBase <|-- ToFSensorVL53L0X
+```
 
