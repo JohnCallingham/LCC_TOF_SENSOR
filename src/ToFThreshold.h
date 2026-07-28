@@ -43,6 +43,18 @@ class ToFThreshold {
      */
     void setInitialState(int range);
 
+    /**
+     * Returns true if this threshold is in state Near, else false.
+     * Used to set the RGB LED if required.
+     */
+    bool isActive();
+
+    /**
+     * Checks whether range has caused this threshold to change its state.
+     * Returns the event index to be sent or -1 if no event to send.
+     */
+    int check(int range);
+
     const char* printCurrentState();
 
     enum State { Unknown, Near, Far };

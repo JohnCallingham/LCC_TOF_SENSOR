@@ -23,3 +23,38 @@ void ToFThreshold::setInitialState(int range) {
     this->currentState = ToFThreshold::State::Far;
   }
 }
+
+bool ToFThreshold::isActive() {
+  if (this->currentState == State::Near) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+int ToFThreshold::check(int range) {
+  int eventIndexToSend = -1;
+
+  switch (this->currentState) {
+    case State::Far:
+      // Has the range moved to less than the near value?
+      if (range < this->valueNear) {
+        this->currentState = State::Near;
+        eventIndexToSend = this->eventIndexNear;
+      }
+      break;
+    
+    case State::Near:
+      // Has the range moved to more than the far value?
+      if (range > this->valueFar) {
+        this->currentState = State::Far;
+        eventIndexToSend = this->eventIndexFar;
+      }
+      break;
+    
+    case State::Unknown:
+      break;
+  }
+
+  return eventIndexToSend;
+}
