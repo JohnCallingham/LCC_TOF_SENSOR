@@ -38,7 +38,7 @@ int ToFSensorVL53L0X::read() {
   if (measure.RangeStatus != 4) {  // phase failures have incorrect data
     // range = measure.RangeDMaxMilliMeter;  // Shows that the maximum range is 953 mm.
     range = measure.RangeMilliMeter; 
-    Serial.printf("\nDistance (mm): %d", range);
+    // Serial.printf("\nDistance (mm): %d", range);
   } else {
     Serial.printf("\n out of range ");
     range = 1000;
