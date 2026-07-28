@@ -34,7 +34,8 @@ class ToFSensorBase : public LCC_Node_Component_Base {
      * Updates the specified threshold's value and hysterisis properties.
      * These will be called when the user has modified the configuration values.
      */
-    void updateValueAndHysterisis(uint8_t thresholdNumber, uint8_t value, uint8_t hysterisis);
+    // void updateValueAndHysterisis(uint8_t thresholdNumber, uint8_t value, uint8_t hysterisis);
+    void updateValueAndHysterisis(uint8_t thresholdNumber, uint16_t value, uint16_t hysterisis);
 
     // Inherited from class LCC_Node_Component_Base.
     bool eventIndexMatches(uint16_t index) final;

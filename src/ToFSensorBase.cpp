@@ -1,15 +1,18 @@
 #include "ToFSensorBase.h"
 
-void ToFSensorBase::updateValueAndHysterisis(uint8_t thresholdNumber, uint8_t value, uint8_t hysterisis) {
+// void ToFSensorBase::updateValueAndHysterisis(uint8_t thresholdNumber, uint8_t value, uint8_t hysterisis) {
+void ToFSensorBase::updateValueAndHysterisis(uint8_t thresholdNumber, uint16_t value, uint16_t hysterisis) {
   // Find the specified threshold.
   for (auto & threshold : thresholds) {
     if (threshold.thresholdNumber == thresholdNumber) {
       // Update the threshold's near and far values.
-      threshold.valueNear = value - (hysterisis/2);
-      threshold.valueFar = value + (hysterisis/2);
+      threshold.calculateNearAndFarValues(value, hysterisis);
 
-      if (threshold.valueNear < 0) threshold.valueNear = 0; //??? required for a uint8 ???
-      if (threshold.valueFar > 255) threshold.valueFar = 255; //??? required for a uint8 ???
+      // threshold.valueNear = value - (hysterisis/2);
+      // threshold.valueFar = value + (hysterisis/2);
+
+      // if (threshold.valueNear < 0) threshold.valueNear = 0; //??? required for a uint8 ???
+      // if (threshold.valueFar > 255) threshold.valueFar = 255; //??? required for a uint8 ???
     }
   }
 }
