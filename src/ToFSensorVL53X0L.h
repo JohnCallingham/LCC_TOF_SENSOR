@@ -1,10 +1,10 @@
 #ifndef TOF_SENSOR_VL53X0L_H
 #define TOF_SENSOR_VL53X0L_H
 
-#include "ToFSensorBase.h"
+#include "ToFSensor.h"
 #include "Adafruit_VL53L0X.h"
 
-class ToFSensorVL53L0X : public ToFSensorBase {
+class ToFSensorVL53L0X : public ToFSensor {
   public:
     ToFSensorVL53L0X(uint8_t multiplexorPort, Adafruit_VL53L0X *vl) { 
       this->multiplexorPort = multiplexorPort;

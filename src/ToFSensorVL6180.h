@@ -1,10 +1,10 @@
 #ifndef TOF_SENSOR_VL6180_H
 #define TOF_SENSOR_VL6180_H
 
-#include "ToFSensorBase.h"
+#include "ToFSensor.h"
 #include "Adafruit_VL6180X.h"
 
-class ToFSensorVL6180 : public ToFSensorBase {
+class ToFSensorVL6180 : public ToFSensor {
   public:
     ToFSensorVL6180(uint8_t multiplexorPort, Adafruit_VL6180X *vl) { 
       this->multiplexorPort = multiplexorPort;

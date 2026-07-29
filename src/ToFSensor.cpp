@@ -1,7 +1,7 @@
-#include "ToFSensorBase.h"
+#include "ToFSensor.h"
 
 // void ToFSensorBase::updateValueAndHysterisis(uint8_t thresholdNumber, uint8_t value, uint8_t hysterisis) {
-void ToFSensorBase::updateValueAndHysterisis(uint8_t thresholdNumber, uint16_t value, uint16_t hysterisis) {
+void ToFSensor::updateValueAndHysterisis(uint8_t thresholdNumber, uint16_t value, uint16_t hysterisis) {
   // Find the specified threshold.
   for (auto & threshold : thresholds) {
     if (threshold.thresholdNumber == thresholdNumber) {
@@ -17,7 +17,7 @@ void ToFSensorBase::updateValueAndHysterisis(uint8_t thresholdNumber, uint16_t v
   }
 }
 
-bool ToFSensorBase::eventIndexMatches(uint16_t index) {
+bool ToFSensor::eventIndexMatches(uint16_t index) {
   for (auto & threshold : thresholds) {
     if ((index == threshold.eventIndexNear) ||
         (index == threshold.eventIndexFar)) return true;
@@ -26,7 +26,7 @@ bool ToFSensorBase::eventIndexMatches(uint16_t index) {
   return false;
 }
 
-bool ToFSensorBase::eventIndexMatchesCurrentState(uint16_t index) {
+bool ToFSensor::eventIndexMatchesCurrentState(uint16_t index) {
   // Determine the threshold for this event index.
   for (auto & threshold : thresholds) {
     if (index == threshold.eventIndexNear) {
@@ -40,7 +40,7 @@ bool ToFSensorBase::eventIndexMatchesCurrentState(uint16_t index) {
   return false;
 }
 
-void ToFSensorBase::sendEventsForCurrentState() {
+void ToFSensor::sendEventsForCurrentState() {
   for (auto & threshold : thresholds) {
     if (threshold.currentState == ToFThreshold::State::Near) {
       if (sendEvent) sendEvent(threshold.eventIndexNear);
@@ -51,7 +51,7 @@ void ToFSensorBase::sendEventsForCurrentState() {
   }
 }
 
-void ToFSensorBase::loop() {
+void ToFSensor::loop() {
   // Need to cause a non blocking delay here to allow the LCC code to run smoothly.
   // Only read the sensor every READ_SENSOR_DELAY_mS.
   if (millis() < nextRead) {
@@ -74,7 +74,7 @@ void ToFSensorBase::loop() {
   }
 }
 
-bool ToFSensorBase::isThresholdActive(uint8_t thresholdNumber) {
+bool ToFSensor::isThresholdActive(uint8_t thresholdNumber) {
   // Find the required threshold object.
   for (auto & threshold : thresholds) {
     if (threshold.thresholdNumber == thresholdNumber) {
@@ -87,7 +87,7 @@ bool ToFSensorBase::isThresholdActive(uint8_t thresholdNumber) {
   return false;
 }
 
-void ToFSensorBase::check(int range) {
+void ToFSensor::check(int range) {
   int eventIndexToSend;
 
   for (auto & threshold : thresholds) {
@@ -99,7 +99,7 @@ void ToFSensorBase::check(int range) {
   }
 }
 
-int ToFSensorBase::initialiseI2C() {
+int ToFSensor::initialiseI2C() {
   // Switch the mux to this port.
   Wire.beginTransmission(MULTIPLEXER_I2C_ADDRESS);
   Wire.write(1 << this->multiplexorPort);
@@ -128,7 +128,7 @@ int ToFSensorBase::initialiseI2C() {
   return true;
 }
 
-void ToFSensorBase::setInitialState() {
+void ToFSensor::setInitialState() {
   // Set the initial state for all thresholds for this sensor.
   int range = this->read();
   Serial.printf("\n%6ld initialising threshold states, range=%d", millis(), range);

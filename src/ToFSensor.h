@@ -9,7 +9,7 @@
 #define MULTIPLEXER_I2C_ADDRESS 0x70
 #define READ_SENSOR_DELAY_mS 50
 
-class ToFSensorBase : public LCC_Node_Component_Base {
+class ToFSensor : public LCC_Node_Component_Base {
   public:
       
     // void addThreshold(uint8_t thresholdNumber, uint16_t valueNear, uint16_t valueFar, uint16_t eventIndexNear, uint16_t eventIndexFar) {
