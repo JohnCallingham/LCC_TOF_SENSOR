@@ -12,14 +12,16 @@
 class ToFSensorBase : public LCC_Node_Component_Base {
   public:
       
-    void addThreshold(uint8_t thresholdNumber, uint16_t valueNear, uint16_t valueFar, uint16_t eventIndexNear, uint16_t eventIndexFar) {
-      thresholds.push_back(ToFThreshold(thresholdNumber, valueNear, valueFar, eventIndexNear, eventIndexFar));
-    }
+    // void addThreshold(uint8_t thresholdNumber, uint16_t valueNear, uint16_t valueFar, uint16_t eventIndexNear, uint16_t eventIndexFar) {
+    //   thresholds.push_back(ToFThreshold(thresholdNumber, valueNear, valueFar, eventIndexNear, eventIndexFar));
+    // }
 
-    void addThreshold(uint8_t thresholdNumber, uint16_t value, uint8_t hysterisis, uint16_t eventIndexNear, uint16_t eventIndexFar) {
+    // void addThreshold(uint8_t thresholdNumber, uint16_t value, uint8_t hysterisis, uint16_t eventIndexNear, uint16_t eventIndexFar) {
+    //   thresholds.push_back(ToFThreshold(thresholdNumber, value, hysterisis, eventIndexNear, eventIndexFar));
+    // }
+    void addThreshold(uint8_t thresholdNumber, uint16_t value, uint16_t hysterisis, uint16_t eventIndexNear, uint16_t eventIndexFar) {
       thresholds.push_back(ToFThreshold(thresholdNumber, value, hysterisis, eventIndexNear, eventIndexFar));
     }
-
     /**
      * Checks for an I2C device on this mux port.
      * Returns true if an I2C device is found on this mux port, else false;
