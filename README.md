@@ -24,7 +24,8 @@ The following functionality is implemented for each ToF sensor;-
 
 ## Class hierarchy
 ```mermaid
-LCC_Node_Component_Base <|-- ToFSensor
+classDiagram
+  LCC_Node_Component_Base <|-- ToFSensor
   ToFSensor <|-- ToFSensorVL53X0L
   ToFSensor <|-- ToFSensorVL6180
   class ToFThreshold {
