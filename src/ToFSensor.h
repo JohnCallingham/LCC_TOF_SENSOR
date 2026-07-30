@@ -7,7 +7,8 @@
 #include <Wire.h>
 
 #define MULTIPLEXER_I2C_ADDRESS 0x70
-#define READ_SENSOR_DELAY_mS 50
+// #define READ_SENSOR_DELAY_mS 50 // OK for VL53X0L, but fails to read the CDI when the VL6180 is added !!!
+#define READ_SENSOR_DELAY_mS 100 // Seems to work OK.
 
 class ToFSensor : public LCC_Node_Component_Base {
   public:
@@ -31,6 +32,7 @@ class ToFSensor : public LCC_Node_Component_Base {
     // Must be defined in derived classes.
     virtual void initialise(bool muxConnected) = 0;
     virtual int read() = 0;
+    virtual const char* sensorType() = 0;
 
     /**
      * Updates the specified threshold's value and hysterisis properties.
@@ -57,7 +59,12 @@ class ToFSensor : public LCC_Node_Component_Base {
      */
     void loop();
 
-  protected:
+    /**
+     * Is there a sensor connected to this mux port?
+     */
+    bool sensorConnected = false;
+
+    protected:
     void setInitialState();
 
 
@@ -66,10 +73,10 @@ class ToFSensor : public LCC_Node_Component_Base {
      */
     uint8_t multiplexorPort;
 
-    /**
-     * Is there a sensor connected to this mux port?
-     */
-    bool sensorConnected = false;
+    // /**
+    //  * Is there a sensor connected to this mux port?
+    //  */
+    // bool sensorConnected = false;
 
     std::vector<ToFThreshold> thresholds; // Stores all thresholds for this ToF sensor.
 

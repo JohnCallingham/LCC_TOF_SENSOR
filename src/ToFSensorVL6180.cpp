@@ -31,7 +31,7 @@ int ToFSensorVL6180::read() {
   uint8_t status = vl->readRangeStatus();
 
   if (status == VL6180X_ERROR_NONE) {
-    return range;
+    return (int) range;
   } else {
     return 255;
   }
