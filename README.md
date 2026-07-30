@@ -8,14 +8,14 @@ This component implements the following classes;-
 - ```ToFSensorVL53X0L```. This class includes the functionality which is specific to the VL53L0X sensor.
 
 This component has the following dependencies;-
-- LCC_NODE_COMPONENT_BASE: https://github.com/JohnCallingham/LCC_NODE_COMPONENT_BASE.git
-- Adafruit_VL6180X: https://github.com/adafruit/Adafruit_VL6180X.git
-- Adafruit_VL53L0X: https://github.com/adafruit/Adafruit_VL53L0X.git
+- [LCC_NODE_COMPONENT_BASE](https://github.com/JohnCallingham/LCC_NODE_COMPONENT_BASE.git)
+- [Adafruit_VL6180X](https://github.com/adafruit/Adafruit_VL6180X.git)
+- [Adafruit_VL53L0X](https://github.com/adafruit/Adafruit_VL53L0X.git)
 
 The following software components are dependencies of one or more of the above components;-
-- Adafruit BusIO: https://github.com/adafruit/Adafruit_BusIO
-- Adafruit GFX Library: https://github.com/adafruit/Adafruit-GFX-Library
-- Adafruit SSD1306: https://github.com/adafruit/Adafruit_SSD1306
+- [Adafruit BusIO](https://github.com/adafruit/Adafruit_BusIO)
+- [Adafruit GFX Library](https://github.com/adafruit/Adafruit-GFX-Library)
+- [Adafruit SSD1306](https://github.com/adafruit/Adafruit_SSD1306)
 
 The PlatformIO Library Dependency Finder handles downloading all dependencies.
 
