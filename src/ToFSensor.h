@@ -64,19 +64,14 @@ class ToFSensor : public LCC_Node_Component_Base {
      */
     bool sensorConnected = false;
 
-    protected:
+  protected:
+  
     void setInitialState();
-
 
     /**
      * The port number on the I2C multiplexor for this ToF sensor.
      */
     uint8_t multiplexorPort;
-
-    // /**
-    //  * Is there a sensor connected to this mux port?
-    //  */
-    // bool sensorConnected = false;
 
     std::vector<ToFThreshold> thresholds; // Stores all thresholds for this ToF sensor.
 

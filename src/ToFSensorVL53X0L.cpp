@@ -44,7 +44,5 @@ int ToFSensorVL53L0X::read() {
     range = 1000;
   }
     
-  // delay(100);
-
   return range;
 }

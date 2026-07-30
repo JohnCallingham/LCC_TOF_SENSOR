@@ -4,9 +4,6 @@
 #include "ToFSensor.h"
 #include "Adafruit_VL53L0X.h"
 
-// #define SENSOR_TYPE_VL53L0X "VL53L0X"
-// const char* sensorTypeVL53L0X = "VL53L0X";
-
 class ToFSensorVL53L0X : public ToFSensor {
   public:
     ToFSensorVL53L0X(uint8_t multiplexorPort, Adafruit_VL53L0X *vl) { 
@@ -31,7 +28,6 @@ class ToFSensorVL53L0X : public ToFSensor {
      * The driver object for this ToF sensor.
      */
     Adafruit_VL53L0X *vl;
-
   };
 
 #endif

@@ -7,12 +7,6 @@ void ToFSensor::updateValueAndHysterisis(uint8_t thresholdNumber, uint16_t value
     if (threshold.thresholdNumber == thresholdNumber) {
       // Update the threshold's near and far values.
       threshold.calculateNearAndFarValues(value, hysterisis);
-
-      // threshold.valueNear = value - (hysterisis/2);
-      // threshold.valueFar = value + (hysterisis/2);
-
-      // if (threshold.valueNear < 0) threshold.valueNear = 0; //??? required for a uint8 ???
-      // if (threshold.valueFar > 255) threshold.valueFar = 255; //??? required for a uint8 ???
     }
   }
 }
