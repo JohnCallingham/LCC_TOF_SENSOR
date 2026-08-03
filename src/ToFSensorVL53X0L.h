@@ -27,7 +27,7 @@ class ToFSensorVL53L0X : public ToFSensor, public I2CPeripheral {
   private:
     /**
      * Called regularly to read the range from this sensor.
-     * Returns the range or 1000 if there is an error.
+     * Returns the range or -1 if there is an error.
      */
     int read() final;
 
