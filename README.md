@@ -9,6 +9,7 @@ This component implements the following classes;-
 
 This component has the following dependencies;-
 - [LCC_NODE_COMPONENT_BASE](https://github.com/JohnCallingham/LCC_NODE_COMPONENT_BASE.git)
+- [I2C_PERIPHERAL](https://github.com/JohnCallingham/I2C_PERIPHERAL.git)
 - [Adafruit_VL6180X](https://github.com/adafruit/Adafruit_VL6180X.git)
 - [Adafruit_VL53L0X](https://github.com/adafruit/Adafruit_VL53L0X.git)
 
@@ -33,6 +34,8 @@ classDiagram
   LCC_Node_Component_Base <|-- ToFSensor
   ToFSensor <|-- ToFSensorVL53X0L
   ToFSensor <|-- ToFSensorVL6180
+  I2CPeripheral <|-- ToFSensorVL53X0L
+  I2CPeripheral <|-- ToFSensorVL6180
   class ToFThreshold {
 
   }
