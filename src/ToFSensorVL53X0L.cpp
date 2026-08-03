@@ -37,6 +37,7 @@ void ToFSensorVL53L0X::initialise(bool muxConnected) {
 
 int ToFSensorVL53L0X::read() {
   int range;
+  uint8_t rangeStatus;
 
   VL53L0X_RangingMeasurementData_t measure;
     
@@ -44,14 +45,16 @@ int ToFSensorVL53L0X::read() {
   vl->rangingTest(&measure, false); // pass in 'true' to get debug data printout!
   // vl->rangingTest(&measure, true); // pass in 'true' to get debug data printout!
 
-  if (measure.RangeStatus != 4) {  // phase failures have incorrect data
+  rangeStatus = measure.RangeStatus;
+  // if (rangeStatus != 4) {  // phase failures have incorrect data
+  if (rangeStatus <= 2) {  // phase failures have incorrect data
     // range = measure.RangeDMaxMilliMeter;  // Shows that the maximum range is 953 mm.
     range = measure.RangeMilliMeter; 
-    // Serial.printf("\nDistance (mm): %d", range);
   } else {
     // Serial.printf("\n out of range ");
-    range = 1000;
+    range = -1;
   }
-    
+
+  // Serial.printf("\nStatus %d, Distance (mm): %d", rangeStatus, range);
   return range;
 }
