@@ -35,13 +35,23 @@ void ToFSensorVL6180::initialise(bool muxConnected) {
   setInitialState();
 }
 
+// int ToFSensorVL6180::read() {
+//   uint8_t range = vl->readRange();
+//   uint8_t status = vl->readRangeStatus();
+
+//   if (status == VL6180X_ERROR_NONE) {
+//     return (int) range;
+//   } else {
+//     return 255;
+//   }
+// }
 int ToFSensorVL6180::read() {
   uint8_t range = vl->readRange();
   uint8_t status = vl->readRangeStatus();
 
-  if (status == VL6180X_ERROR_NONE) {
-    return (int) range;
-  } else {
-    return 255;
+  if (status != VL6180X_ERROR_NONE) {
+    range = 255; // Indicate an error occurred.
   }
-}
+
+  // Serial.printf("\nDistance (mm): %d", range);
+  return (int) range;
