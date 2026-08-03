@@ -50,8 +50,9 @@ int ToFSensorVL6180::read() {
   uint8_t status = vl->readRangeStatus();
 
   if (status != VL6180X_ERROR_NONE) {
-    range = 255; // Indicate an error occurred.
+    range = -1; // Indicate an error occurred.
   }
 
   // Serial.printf("\nDistance (mm): %d", range);
   return (int) range;
+}
