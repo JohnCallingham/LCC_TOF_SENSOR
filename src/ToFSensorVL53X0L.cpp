@@ -2,26 +2,35 @@
 
 void ToFSensorVL53L0X::initialise(bool muxConnected) {
 
-  if (! muxConnected) {
-    // No multiplexor connected, so nothing to do!
-    return;
+  if (connectionType == ConnectionType::DIRECT) {
+
+
   }
 
-  if (! initialiseI2C()) {
-    // No I2C devices connected, so nothing to do!
-    return;
-  }
+  if (connectionType == ConnectionType::MULTIPLEXOR) {
 
-  // Check for a sensor on this port.
-  if (! vl->begin()) {
-    // There is no sensor on this port.
-    Serial.printf("\n%6ld No sensor on multiplexor port %d", millis(), this->multiplexorPort);
-    sensorConnected = false;
-    return;
-  }
+    if (! muxConnected) {
+      // No multiplexor connected, so nothing to do!
+      return;
+    }
 
-  Serial.printf("\n%6ld Sensor on multiplexor port %d", millis(), this->multiplexorPort);
-  sensorConnected = true;
+    // if (! initialiseI2C()) {
+    if (! initialiseI2CMultiplexor(this->multiplexorPort)) {
+      // No I2C devices connected, so nothing to do!
+      return;
+    }
+
+    // Check for a sensor on this port.
+    if (! vl->begin()) {
+      // There is no sensor on this port.
+      Serial.printf("\n%6ld No sensor on multiplexor port %d", millis(), this->multiplexorPort);
+      sensorConnected = false;
+      return;
+    }
+
+    Serial.printf("\n%6ld Sensor on multiplexor port %d", millis(), this->multiplexorPort);
+    sensorConnected = true;
+  }
 
   setInitialState();
 }

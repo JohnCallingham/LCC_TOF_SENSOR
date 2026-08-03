@@ -2,12 +2,19 @@
 #define TOF_SENSOR_VL6180_H
 
 #include "ToFSensor.h"
+#include "I2CPeripheral.h"
 #include "Adafruit_VL6180X.h"
 
-class ToFSensorVL6180 : public ToFSensor {
+class ToFSensorVL6180 : public ToFSensor, public I2CPeripheral {
   public:
     ToFSensorVL6180(uint8_t multiplexorPort, Adafruit_VL6180X *vl) { 
+      connectionType = ConnectionType::MULTIPLEXOR;
       this->multiplexorPort = multiplexorPort;
+      this->vl = vl;
+    }
+
+    ToFSensorVL6180(Adafruit_VL6180X *vl) { 
+      connectionType = ConnectionType::DIRECT;
       this->vl = vl;
     }
 

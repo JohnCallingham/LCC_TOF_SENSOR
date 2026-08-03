@@ -8,7 +8,13 @@
 class ToFSensorVL53L0X : public ToFSensor, public I2CPeripheral {
   public:
     ToFSensorVL53L0X(uint8_t multiplexorPort, Adafruit_VL53L0X *vl) { 
+      connectionType = ConnectionType::MULTIPLEXOR;
       this->multiplexorPort = multiplexorPort;
+      this->vl = vl;
+    }
+
+    ToFSensorVL53L0X(Adafruit_VL53L0X *vl) { 
+      connectionType = ConnectionType::DIRECT;
       this->vl = vl;
     }
 
