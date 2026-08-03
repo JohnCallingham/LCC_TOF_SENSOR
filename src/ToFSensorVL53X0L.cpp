@@ -23,12 +23,12 @@ void ToFSensorVL53L0X::initialise(bool muxConnected) {
     // Check for a sensor on this port.
     if (! vl->begin()) {
       // There is no sensor on this port.
-      Serial.printf("\n%6ld No sensor on multiplexor port %d", millis(), this->multiplexorPort);
+      Serial.printf("\n%6ld [ToFSensorVL53L0X::initialise] No sensor on multiplexor port %d", millis(), this->multiplexorPort);
       sensorConnected = false;
       return;
     }
 
-    Serial.printf("\n%6ld Sensor on multiplexor port %d", millis(), this->multiplexorPort);
+    Serial.printf("\n%6ld [ToFSensorVL53L0X::initialise] Sensor on multiplexor port %d", millis(), this->multiplexorPort);
     sensorConnected = true;
   }
 
