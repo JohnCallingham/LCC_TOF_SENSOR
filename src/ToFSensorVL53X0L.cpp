@@ -2,7 +2,7 @@
 
 void ToFSensorVL53L0X::initialise(bool muxConnected) {
 
-  if (! I2CPeripheral::initialiseI2C(muxConnected, this->multiplexorPort)) {
+  if (! initialiseI2C(muxConnected, this->multiplexorPort)) {
     // No I2C device connected, so nothing to do!
     return;
   }
