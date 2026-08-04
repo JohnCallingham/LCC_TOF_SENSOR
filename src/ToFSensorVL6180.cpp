@@ -53,6 +53,6 @@ int ToFSensorVL6180::read() {
     range = -1; // Indicate an error occurred.
   }
 
-  Serial.printf("\nStatus %d, Distance (mm): %d", status, range);
+  // Serial.printf("\nStatus %d, Distance (mm): %d", status, range);
   return range;
 }
