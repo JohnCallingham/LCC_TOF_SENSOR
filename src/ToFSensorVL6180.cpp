@@ -32,12 +32,22 @@ void ToFSensorVL6180::initialise(bool muxConnected) {
   // Check for a sensor on this port.
   if (! vl->begin()) {
     // There is no sensor on this port.
-    Serial.printf("\n%6ld [ToFSensorVL6180::initialise] No sensor on multiplexor port %d", millis(), this->multiplexorPort);
+    if (muxConnected) {
+      Serial.printf("\n%6ld [ToFSensorVL6180::initialise] No sensor on multiplexor port %d", millis(), this->multiplexorPort);
+    } else {
+      Serial.printf("\n%6ld [ToFSensorVL6180::initialise] No sensor directly connected", millis());
+    }
+    // Serial.printf("\n%6ld [ToFSensorVL6180::initialise] No sensor on multiplexor port %d", millis(), this->multiplexorPort);
     sensorConnected = false;
     return;
   } 
 
-  Serial.printf("\n%6ld [ToFSensorVL6180::initialise] Sensor on multiplexor port %d", millis(), this->multiplexorPort);
+  if (muxConnected) {
+    Serial.printf("\n%6ld [ToFSensorVL6180::initialise] Sensor initialised on multiplexor port %d", millis(), this->multiplexorPort);
+  } else {
+    Serial.printf("\n%6ld [ToFSensorVL6180::initialise] Sensor initialised directly connected", millis());
+  }
+  // Serial.printf("\n%6ld [ToFSensorVL6180::initialise] Sensor on multiplexor port %d", millis(), this->multiplexorPort);
   sensorConnected = true;
 
   setInitialState();
