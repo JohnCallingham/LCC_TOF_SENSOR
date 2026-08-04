@@ -64,7 +64,10 @@ void ToFSensor::loop() {
 
     // Get the current range and check if any threshold events need to be sent.
     int range = this->read(); // Calls read() in the class for the appropriate sensor.
-    this->check(range);
+    if (range != -1) {
+      // Only check thresholds if the range is valid.
+      this->check(range);
+    }
   }
 }
 
