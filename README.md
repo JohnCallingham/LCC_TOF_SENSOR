@@ -1,5 +1,5 @@
 # LCC_TOF_SENSOR
-This component is part of a suite of components which can be used as part of a program which implements an OpenLCB/LCC node. It has been developed using PlatformIO and has been tested on an Arduino Nano ESP32. The program which includes this component will drive an I2C multiplexor and the multiplexor's output ports will be connected to one or more ToF sensors. Two types of sensor can be connected - VL6180 and VL53X0L.
+This component is part of a suite of components which can be used as part of a program which implements an OpenLCB/LCC node. It has been developed using PlatformIO and has been tested on an Arduino Nano ESP32. The program which includes this component will drive an I2C multiplexor and the multiplexor's output ports will be connected to one or more ToF sensors. Two types of sensor can be connected - [VL6180](https://www.adafruit.com/product/3316) and [VL53X0L](https://www.adafruit.com/product/3317).
 
 This component implements the following classes;-
 - ```ToFThreshold```. This class represents a threshold which is associated with a sensor.
